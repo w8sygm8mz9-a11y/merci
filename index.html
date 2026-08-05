@@ -51,8 +51,18 @@
       if(statusLabel) {
         statusLabel.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Sync Active - Online`;
       }
+      // Initialize calendar after the page is ready
+      const today = new Date();
+      const defaultDate =
+        `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+      // If the hard-coded date isn't in the current month, use today's date.
+      if (!window.state.selectedDate) {
+        window.state.selectedDate = defaultDate;
+      }
+
       window.renderCalendar();
-      window.updateSelectedDayDetails();
+      window.selectDate(window.state.selectedDate);
       if (window.state.viewMode === 'owner') {
         window.updateDashboardData();
       }
@@ -366,8 +376,18 @@
       document.getElementById('selectedDateVal').value = dateString;
       window.state.selectedTime = null;
       document.getElementById('selectedTimeVal').value = '';
+      // Initialize calendar after the page is ready
+      const today = new Date();
+      const defaultDate =
+        `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+      // If the hard-coded date isn't in the current month, use today's date.
+      if (!window.state.selectedDate) {
+        window.state.selectedDate = defaultDate;
+      }
+
       window.renderCalendar();
-      window.updateSelectedDayDetails();
+      window.selectDate(window.state.selectedDate);
     };
 
     window.updateSelectedDayDetails = function() {
