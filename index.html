@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Merci Nail Services - Booking</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FFF0F2; color: #2A0815; }
+    .font-serif { font-family: 'Playfair Display', serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #FCE7F3; border-radius: 4px; }
+  </style>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, addDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD-mockKeyForSafetyPlaceholder",
+      authDomain: "merci-marry-nails.firebaseapp.com",
+      projectId: "merci-marry-nails",
+      storageBucket: "merci-marry-nails.appspot.com",
+      messagingSenderId: "109823746291",
+      appId: "1:109823746291:web:a1b2c3d4e5f67890"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const bookingsCol = collection(db, "appointments");
+
+    window.cloudSaveHandler = async function(data) {
+      await addDoc(bookingsCol, { ...data, createdAt: serverTimestamp() });
+    };
+
+    window.cloudDeleteHandler = async function(id) {
+      await deleteDoc(doc(db, "appointments", id));
+    };
+
+    onSnapshot(bookingsCol, (snapshot) => {
+      const liveData = [];
+      snapshot.forEach(docSnap => {
+        liveData.push({ id: docSnap.id, ...docSnap.data() });
+      });
+      window.state.appointments = liveData;
+      const statusLabel = document.getElementById('cloudStatusLabel');
+      if(statusLabel) {
+        statusLabel.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Sync Active - Online`;
+      }
+      window.renderCalendar();
+      window.updateSelectedDayDetails();
+      if (window.state.viewMode === 'owner') {
+        window.updateDashboardData();
+      }
+    }, (error) => {
+      console.error(error);
+      const statusLabel = document.getElementById('cloudStatusLabel');
+      if(statusLabel) {
+        statusLabel.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span> Offline / Local Cache`;
+      }
+    });
+  </script>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+  <header class="bg-[#2A0815] border-b border-[#D4AF37]/30 sticky top-0 z-40 backdrop-blur-md shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <img src="IMG_7545.PNG" onerror="this.src='https://images.unsplash.com/photo-1604654894610-df4906b1726a?w=150'" alt="Merci Logo" class="h-14 w-14 rounded-full border-2 border-[#D4AF37] object-cover shadow-md bg-white">
+        <div>
+          <span class="text-2xl font-bold tracking-wider font-serif text-[#D4AF37]">merci</span>
+          <span class="text-[10px] block font-semibold text-pink-200 tracking-widest uppercase -mt-1">NAIL SERVICES</span>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2 bg-[#441122] p-1 rounded-xl border border-pink-900/40">
+        <button id="btnClientMode" onclick="switchMode('client')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 flex items-center space-x-1.5 bg-[#D4AF37] text-[#2A0815] shadow-md">
+          <i class="fa-solid fa-user"></i>
+          <span>Client Booking</span>
+        </button>
+        <button id="btnOwnerMode" onclick="switchMode('owner')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 flex items-center space-x-1.5 text-pink-200 hover:text-white">
+          <i class="fa-solid fa-lock"></i>
+          <span>Merci Admin</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8 bg-gradient-to-r from-[#2A0815] to-[#4A1125] border-l-4 border-[#D4AF37] rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
+      <div class="relative z-10 md:flex items-center justify-between gap-4">
+        <div>
+          <span class="bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+            <i class="fa-solid fa-circle-nodes animate-pulse mr-1"></i> Real-Time Database
+          </span>
+          <h1 class="text-2xl md:text-3xl font-serif font-bold mt-2 tracking-wide text-white">Live Booking Scheduler</h1>
+          <p class="text-pink-100 text-sm mt-1 max-w-xl">Every session locks globally across all phones. Email alerts go directly to <strong>joubranmary@gmail.com</strong>.</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+          <div class="bg-black/30 px-4 py-2.5 rounded-xl border border-white/10 text-xs text-center">
+            <span class="block text-pink-200 font-semibold uppercase">Cloud Connection</span>
+            <span id="cloudStatusLabel" class="font-bold text-[#D4AF37] flex items-center justify-center gap-1.5 mt-0.5">
+              <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> Connecting to DB...
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <section id="clientViewSection" class="lg:col-span-12 grid grid-cols-1 md:grid-cols-12 gap-8">
+        <div class="md:col-span-7 bg-white p-6 rounded-2xl border border-pink-100/50 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h2 class="text-xl font-serif font-bold text-[#2A0815]">Select Date & Time</h2>
+                <p class="text-slate-400 text-xs font-medium">Select a date to view real-time slot availability</p>
+              </div>
+              <div class="flex gap-2 text-xs font-semibold">
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Available</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Full</span>
+              </div>
+            </div>
+
+            <div class="mb-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 id="currentMonthYear" class="font-bold text-[#2A0815] font-serif">August 2026</h3>
+                <div class="flex gap-1.5">
+                  <button onclick="prevMonth()" class="p-2 bg-[#FFF5F6] hover:bg-pink-100 text-[#2A0815] rounded-lg border border-pink-100 transition-all">
+                    <i class="fa-solid fa-chevron-left text-sm"></i>
+                  </button>
+                  <button onclick="nextMonth()" class="p-2 bg-[#FFF5F6] hover:bg-pink-100 text-[#2A0815] rounded-lg border border-pink-100 transition-all">
+                    <i class="fa-solid fa-chevron-right text-sm"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-7 text-center text-xs font-bold text-pink-400 mb-2">
+                <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+              </div>
+
+              <div id="calendarDays" class="grid grid-cols-7 gap-2"></div>
+            </div>
+
+            <div class="border-t border-pink-50 pt-6">
+              <div class="flex justify-between items-center mb-4">
+                <h4 class="font-bold text-[#2A0815] flex items-center gap-2">
+                  <i class="fa-solid fa-clock text-[#D4AF37]"></i>
+                  <span>Available slots for <span id="selectedDateLabel" class="text-pink-600">Today</span></span>
+                </h4>
+                <span id="dayCapacityBadge" class="text-xs px-2.5 py-1 rounded-full font-bold"></span>
+              </div>
+              <div id="hourSlotsGrid" class="grid grid-cols-3 sm:grid-cols-3 gap-2.5"></div>
+            </div>
+          </div>
+
+          <div class="mt-8 bg-[#FFF5F6] p-4 rounded-xl border border-pink-100 flex justify-between items-center">
+            <div>
+              <span class="text-xs text-pink-400 uppercase font-bold tracking-wider block">Your Selected Slot</span>
+              <span id="summaryDateTime" class="text-sm font-bold text-[#2A0815]">Please select date & time slot</span>
+            </div>
+            <span class="text-xs font-bold px-2.5 py-1 bg-white border border-[#D4AF37]/30 text-[#D4AF37] rounded-lg">2hr Sessions</span>
+          </div>
+        </div>
+
+        <div class="md:col-span-5 flex flex-col gap-6">
+          <div class="bg-white p-6 rounded-2xl border border-pink-100/50 shadow-sm">
+            <h3 class="font-serif font-bold text-[#2A0815] text-base mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-chart-line text-[#D4AF37]"></i>
+              <span>Live Slot Capacity</span>
+            </h3>
+            <div class="space-y-4">
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span class="text-slate-500">Day Booking Fill-Rate</span>
+                  <span id="capacityPercentText" class="text-slate-800">0% Filled</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                  <div id="capacityProgressBar" class="h-full bg-gradient-to-r from-[#D4AF37] to-[#2A0815] rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-pink-100/50 shadow-sm flex-grow">
+            <h3 class="font-serif font-bold text-[#2A0815] text-base mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-pen-to-square text-[#D4AF37]"></i>
+              <span>Enter Booking Details</span>
+            </h3>
+            
+            <form id="appointmentForm" onsubmit="handleBookingSubmit(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Full Name</label>
+                <input type="text" id="clientName" required placeholder="Name" class="w-full px-4 py-2.5 bg-[#FFF5F6]/40 border border-pink-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Email Address</label>
+                <input type="email" id="clientEmail" required placeholder="email@example.com" class="w-full px-4 py-2.5 bg-[#FFF5F6]/40 border border-pink-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Phone Number</label>
+                <input type="tel" id="clientPhone" required placeholder="+123456789" class="w-full px-4 py-2.5 bg-[#FFF5F6]/40 border border-pink-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Notes (Optional)</label>
+                <textarea id="clientNotes" rows="2" placeholder="Extension style, gel polish..." class="w-full p-3 bg-[#FFF5F6]/40 border border-pink-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] resize-none"></textarea>
+              </div>
+
+              <input type="hidden" id="selectedDateVal">
+              <input type="hidden" id="selectedTimeVal">
+
+              <button type="submit" class="w-full mt-2 bg-[#2A0815] hover:bg-[#4A1125] text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-circle-check text-[#D4AF37]"></i>
+                <span>Confirm Appointment</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section id="ownerViewSection" class="lg:col-span-12 hidden space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="bg-white p-5 rounded-2xl border border-pink-50 shadow-sm flex items-center gap-4">
+            <div class="bg-[#FFF5F6] text-[#2A0815] p-3.5 rounded-xl">
+              <i class="fa-solid fa-calendar-days text-xl"></i>
+            </div>
+            <div>
+              <span class="text-xs text-slate-400 font-bold block uppercase tracking-wider">Total Active Bookings</span>
+              <span id="statTotalBookings" class="text-2xl font-extrabold text-[#2A0815]">0</span>
+            </div>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-pink-50 shadow-sm flex items-center gap-4">
+            <div class="bg-emerald-50 text-emerald-600 p-3.5 rounded-xl">
+              <i class="fa-solid fa-circle-check text-xl"></i>
+            </div>
+            <div>
+              <span class="text-xs text-slate-400 font-bold block uppercase tracking-wider">Today's Sessions</span>
+              <span id="statTodayBookings" class="text-2xl font-extrabold text-slate-800">0</span>
+            </div>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-pink-50 shadow-sm flex items-center gap-4">
+            <div class="bg-pink-50 text-[#2A0815] p-3.5 rounded-xl">
+              <i class="fa-solid fa-envelope text-xl"></i>
+            </div>
+            <div>
+              <span class="text-xs text-slate-400 font-bold block uppercase tracking-wider">Destination Email</span>
+              <span class="text-sm font-extrabold text-[#2A0815] block mt-1">joubranmary@gmail.com</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-pink-50 shadow-sm">
+          <h3 class="font-bold text-[#2A0815] text-lg mb-4">Appointment Log</h3>
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-pink-50 text-pink-400 text-xs font-extrabold uppercase tracking-wider">
+                  <th class="pb-3 pr-4">Client</th>
+                  <th class="pb-3 px-4">Date / Time Slot</th>
+                  <th class="pb-3 px-4">Status</th>
+                  <th class="pb-3 pl-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminBookingsTable" class="divide-y divide-pink-50 text-sm"></tbody>
+            </table>
+          </div>
+          <div id="emptyAdminState" class="hidden flex-col items-center justify-center py-12 text-center">
+            <h4 class="font-bold text-[#2A0815] text-base">No appointments booked yet</h4>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="successModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-pink-50 text-center">
+      <i class="fa-solid fa-circle-check text-emerald-500 text-5xl mb-4"></i>
+      <h3 class="text-2xl font-serif font-bold text-[#2A0815] mb-4">Appointment Confirmed!</h3>
+      <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 my-4 text-left space-y-2 text-xs">
+        <div class="flex justify-between"><span class="text-slate-400">Client:</span><span id="modalClientName" class="font-bold text-slate-800"></span></div>
+        <div class="flex justify-between"><span class="text-slate-400">Date:</span><span id="modalClientDate" class="font-bold text-slate-800"></span></div>
+        <div class="flex justify-between"><span class="text-slate-400">Time:</span><span id="modalClientTime" class="font-bold text-[#D4AF37]"></span></div>
+      </div>
+      <button onclick="closeSuccessModal()" class="w-full bg-[#2A0815] text-white font-bold py-3 rounded-xl">Close</button>
+    </div>
+  </div>
+
+  <div id="adminAuthModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-pink-50 text-center">
+      <h3 class="text-lg font-serif font-bold text-[#2A0815] mb-2">Admin Passcode</h3>
+      <input type="password" id="adminPasswordInput" placeholder="Password" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-center mb-4 focus:outline-none">
+      <div class="flex gap-2">
+        <button onclick="closeAdminAuthModal()" class="w-1/2 bg-slate-100 text-slate-700 py-2 rounded-xl text-xs">Cancel</button>
+        <button onclick="submitAdminAuth()" class="w-1/2 bg-[#2A0815] text-white font-bold py-2 rounded-xl text-xs">Unlock</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastNotification" class="fixed bottom-4 right-4 bg-slate-900 text-white py-3 px-5 rounded-2xl shadow-2xl flex items-center gap-3 transform translate-y-24 opacity-0 transition-all duration-300 z-50">
+    <span id="toastText" class="text-xs font-medium"></span>
+  </div>
+
+  <script>
+    window.state = {
+      viewMode: 'client',
+      ownerConfig: { slotMaxCapacity: 1, web3FormsAccessKey: "289757f8-32d4-4abd-b1a7-464429addde7" },
+      currentYear: 2026,
+      currentMonth: 7,
+      selectedDate: "2026-08-05",
+      selectedTime: null,
+      appointments: [],
+      timeSlots: ["09:00 AM", "11:00 AM", "01:00 PM", "03:00 PM", "05:00 PM", "07:00 PM"]
+    };
+
+    window.renderCalendar = function() {
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      document.getElementById('currentMonthYear').innerText = `${monthNames[window.state.currentMonth]} ${window.state.currentYear}`;
+
+      const grid = document.getElementById('calendarDays');
+      grid.innerHTML = '';
+
+      const firstDayIndex = new Date(window.state.currentYear, window.state.currentMonth, 1).getDay();
+      const totalDays = new Date(window.state.currentYear, window.state.currentMonth + 1, 0).getDate();
+
+      for (let i = 0; i < firstDayIndex; i++) {
+        grid.appendChild(document.createElement('div'));
+      }
+
+      for (let day = 1; day <= totalDays; day++) {
+        const formattedDate = `${window.state.currentYear}-${String(window.state.currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dayBookings = window.state.appointments.filter(ap => ap.date === formattedDate);
+        const dayCapacityRatio = dayBookings.length / window.state.timeSlots.length;
+        
+        let statusClass = "bg-white text-slate-700 hover:bg-rose-50 border-pink-100";
+        if (dayCapacityRatio >= 1) statusClass = "bg-rose-50 text-rose-800 border-rose-100";
+
+        const isSelected = window.state.selectedDate === formattedDate;
+        const ringClass = isSelected ? 'ring-2 ring-[#D4AF37] font-extrabold' : '';
+
+        const btn = document.createElement('button');
+        btn.type = "button";
+        btn.onclick = () => window.selectDate(formattedDate);
+        btn.className = `h-10 flex items-center justify-center rounded-xl border text-xs font-semibold transition-all ${statusClass} ${ringClass}`;
+        btn.innerText = day;
+        grid.appendChild(btn);
+      }
+    };
+
+    window.prevMonth = function() {
+      window.state.currentMonth--;
+      if (window.state.currentMonth < 0) { window.state.currentMonth = 11; window.state.currentYear--; }
+      window.renderCalendar();
+    };
+
+    window.nextMonth = function() {
+      window.state.currentMonth++;
+      if (window.state.currentMonth > 11) { window.state.currentMonth = 0; window.state.currentYear++; }
+      window.renderCalendar();
+    };
+
+    window.selectDate = function(dateString) {
+      window.state.selectedDate = dateString;
+      document.getElementById('selectedDateVal').value = dateString;
+      window.state.selectedTime = null;
+      document.getElementById('selectedTimeVal').value = '';
+      window.renderCalendar();
+      window.updateSelectedDayDetails();
+    };
+
+    window.updateSelectedDayDetails = function() {
+      const dateObj = new Date(window.state.selectedDate + "T00:00:00");
+      document.getElementById('selectedDateLabel').innerText = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+      const dayBookings = window.state.appointments.filter(ap => ap.date === window.state.selectedDate);
+      const capacityPercent = Math.round((dayBookings.length / window.state.timeSlots.length) * 100);
+      
+      document.getElementById('capacityPercentText').innerText = `${capacityPercent}% Filled`;
+      document.getElementById('capacityProgressBar').style.width = `${capacityPercent}%`;
+
+      const grid = document.getElementById('hourSlotsGrid');
+      grid.innerHTML = '';
+      
+      window.state.timeSlots.forEach(time => {
+        const isFull = dayBookings.some(ap => ap.time === time);
+        const tile = document.createElement('button');
+        tile.type = "button";
+        
+        let style = "border-pink-100 text-slate-700 bg-white hover:border-[#D4AF37]";
+        if (isFull) {
+          style = "border-rose-100 text-rose-400 bg-rose-50/50 cursor-not-allowed";
+          tile.disabled = true;
+        } else if (window.state.selectedTime === time) {
+          style = "border-[#D4AF37] bg-rose-50 text-[#2A0815] font-bold";
+        }
+
+        tile.className = `p-3 rounded-xl border text-center text-xs transition-all ${style}`;
+        tile.onclick = () => { if (!isFull) window.selectTimeSlot(time); };
+        tile.innerHTML = `${time} ${isFull ? '<span class="block text-[9px] text-rose-500">Booked</span>' : ''}`;
+        grid.appendChild(tile);
+      });
+
+      window.updateBookingSummary();
+    };
+
+    window.selectTimeSlot = function(time) {
+      window.state.selectedTime = time;
+      document.getElementById('selectedTimeVal').value = time;
+      window.updateSelectedDayDetails();
+    };
+
+    window.updateBookingSummary = function() {
+      const summaryText = document.getElementById('summaryDateTime');
+      if (window.state.selectedDate && window.state.selectedTime) {
+        summaryText.innerText = `${window.state.selectedDate} @ ${window.state.selectedTime}`;
+      } else {
+        summaryText.innerText = "Please select date & time slot";
+      }
+    };
+
+    window.handleBookingSubmit = async function(event) {
+      event.preventDefault();
+
+      const name = document.getElementById('clientName').value.trim();
+      const email = document.getElementById('clientEmail').value.trim();
+      const phone = document.getElementById('clientPhone').value.trim();
+      const notes = document.getElementById('clientNotes').value.trim();
+      const date = document.getElementById('selectedDateVal').value;
+      const time = document.getElementById('selectedTimeVal').value;
+
+      if (!date || !time) {
+        window.showToastNotification("Select a date and time slot first.");
+        return;
+      }
+
+      const booking = { name, email, phone, date, time, notes };
+
+      try {
+        if (window.cloudSaveHandler) {
+          await window.cloudSaveHandler(booking);
+        }
+        window.triggerRealEmailAlert(booking);
+        window.openSuccessModal(booking);
+
+        document.getElementById('appointmentForm').reset();
+        window.state.selectedTime = null;
+        document.getElementById('selectedTimeVal').value = '';
+        window.updateBookingSummary();
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    window.triggerRealEmailAlert = function(booking) {
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: window.state.ownerConfig.web3FormsAccessKey,
+          subject: `New Nail Booking: ${booking.name}`,
+          to: "joubranmary@gmail.com",
+          message: `Name: ${booking.name}\nEmail: ${booking.email}\nPhone: ${booking.phone}\nDate: ${booking.date}\nTime: ${booking.time}\nNotes: ${booking.notes || 'None'}`
+        })
+      });
+    };
+
+    window.switchMode = function(mode) {
+      if (mode === 'owner') {
+        document.getElementById('adminAuthModal').classList.remove('hidden');
+        document.getElementById('adminPasswordInput').value = '';
+        return;
+      }
+      window.actualSwitch('client');
+    };
+
+    window.closeAdminAuthModal = function() {
+      document.getElementById('adminAuthModal').classList.add('hidden');
+    };
+
+    window.submitAdminAuth = function() {
+      if (document.getElementById('adminPasswordInput').value === 'merci2026') {
+        document.getElementById('adminAuthModal').classList.add('hidden');
+        window.actualSwitch('owner');
+      } else {
+        window.showToastNotification("Invalid password");
+      }
+    };
+
+    window.actualSwitch = function(mode) {
+      window.state.viewMode = mode;
+      const clientSec = document.getElementById('clientViewSection');
+      const ownerSec = document.getElementById('ownerViewSection');
+
+      if (mode === 'client') {
+        clientSec.classList.remove('hidden');
+        ownerSec.classList.add('hidden');
+      } else {
+        ownerSec.classList.remove('hidden');
+        clientSec.classList.add('hidden');
+        window.updateDashboardData();
+      }
+    };
+
+    window.updateDashboardData = function() {
+      document.getElementById('statTotalBookings').innerText = window.state.appointments.length;
+      document.getElementById('statTodayBookings').innerText = window.state.appointments.filter(ap => ap.date === window.state.selectedDate).length;
+
+      const tableBody = document.getElementById('adminBookingsTable');
+      const emptyState = document.getElementById('emptyAdminState');
+
+      if (window.state.appointments.length === 0) {
+        tableBody.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        emptyState.classList.add('flex');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      tableBody.innerHTML = window.state.appointments.map(ap => `
+        <tr class="hover:bg-rose-50/30">
+          <td class="py-3 pr-4">
+            <div class="font-bold text-[#2A0815]">${ap.name}</div>
+            <div class="text-xs text-slate-400">${ap.email} • ${ap.phone}</div>
+          </td>
+          <td class="py-3 px-4 text-[#2A0815]">${ap.date}<br><span class="text-xs text-slate-400">${ap.time}</span></td>
+          <td class="py-3 px-4"><span class="text-xs text-emerald-600 font-bold">Confirmed</span></td>
+          <td class="py-3 pl-4 text-right">
+            <button onclick="deleteAppointment('${ap.id}')" class="text-slate-400 hover:text-rose-500"><i class="fa-regular fa-trash-can"></i></button>
+          </td>
+        </tr>
+      `).join('');
+    };
+
+    window.deleteAppointment = async function(id) {
+      if (!confirm("Cancel this booking?")) return;
+      if (window.cloudDeleteHandler) {
+        await window.cloudDeleteHandler(id);
+      }
+    };
+
+    window.openSuccessModal = function(booking) {
+      document.getElementById('modalClientName').innerText = booking.name;
+      document.getElementById('modalClientDate').innerText = booking.date;
+      document.getElementById('modalClientTime').innerText = booking.time;
+      document.getElementById('successModal').classList.remove('hidden');
+    };
+
+    window.closeSuccessModal = function() {
+      document.getElementById('successModal').classList.add('hidden');
+    };
+
+    window.showToastNotification = function(msg) {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastText').innerText = msg;
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      setTimeout(() => toast.classList.add('translate-y-24', 'opacity-0'), 3000);
+    };
+
+    window.renderCalendar();
+    window.updateSelectedDayDetails();
+  </script>
+</body>
+</html>
