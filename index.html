@@ -313,16 +313,31 @@
   </div>
 
   <script>
-    window.state = {
-      viewMode: 'client',
-      ownerConfig: { slotMaxCapacity: 1, web3FormsAccessKey: "289757f8-32d4-4abd-b1a7-464429addde7" },
-      currentYear: 2026,
-      currentMonth: 7,
-      selectedDate: "2026-08-05",
-      selectedTime: null,
-      appointments: [],
-      timeSlots: ["09:00 AM", "11:00 AM", "01:00 PM", "03:00 PM", "05:00 PM", "07:00 PM"]
-    };
+   const today = new Date();
+
+window.state = {
+  viewMode: 'client',
+  ownerConfig: {
+    slotMaxCapacity: 1,
+    web3FormsAccessKey: "289757f8-32d4-4abd-b1a7-464429addde7"
+  },
+
+  currentYear: today.getFullYear(),
+  currentMonth: today.getMonth(),
+  selectedDate:
+    `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`,
+
+  selectedTime: null,
+  appointments: [],
+  timeSlots: [
+    "09:00 AM",
+    "11:00 AM",
+    "01:00 PM",
+    "03:00 PM",
+    "05:00 PM",
+    "07:00 PM"
+  ]
+};
 
     window.renderCalendar = function() {
       const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -343,8 +358,15 @@
         const dayBookings = window.state.appointments.filter(ap => ap.date === formattedDate);
         const dayCapacityRatio = dayBookings.length / window.state.timeSlots.length;
         
-        let statusClass = "bg-white text-slate-700 hover:bg-rose-50 border-pink-100";
-        if (dayCapacityRatio >= 1) statusClass = "bg-rose-50 text-rose-800 border-rose-100";
+       let statusClass = "bg-white text-slate-700 hover:bg-rose-50 border-pink-100";
+
+if (dayBookings.length > 0) {
+    statusClass = "bg-yellow-50 text-yellow-800 border-yellow-300";
+}
+
+if (dayCapacityRatio >= 1) {
+    statusClass = "bg-rose-50 text-rose-800 border-rose-300";
+}
 
         const isSelected = window.state.selectedDate === formattedDate;
         const ringClass = isSelected ? 'ring-2 ring-[#D4AF37] font-extrabold' : '';
