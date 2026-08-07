@@ -76,6 +76,14 @@
     });
   </script>
   <link rel="icon" type="image/png" href="nail.PNG">
+  <div id="logoModal"
+     class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+
+    <img id="logoLarge"
+         src="nail.PNG"
+         class="max-w-[90%] max-h-[90%] rounded-3xl shadow-2xl">
+
+</div>
 </head>
 <body class="min-h-screen flex flex-col antialiased">
 
@@ -83,9 +91,10 @@
     <div class="flex items-center gap-3">
 
     <img
-        src="nail.PNG"
-        alt="Merci Logo"
-        class="w-12 h-12 rounded-full object-cover">
+    id="logo"
+    src="nail.PNG"
+    alt="Merci Logo"
+    class="w-12 h-12 rounded-full object-cover cursor-pointer">
 
     <div class="flex flex-col justify-center">
         <h1 class="text-4xl font-serif font-bold text-[#D4AF37] leading-none">
@@ -411,16 +420,25 @@ if (dayCapacityRatio >= 1) {
       document.getElementById('selectedDateVal').value = dateString;
       window.state.selectedTime = null;
       document.getElementById('selectedTimeVal').value = '';
-      // Initialize calendar after the page is ready
+    
       const today = new Date();
       const defaultDate =
         `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 
-      // If the hard-coded date isn't in the current month, use today's date.
+    
       if (!window.state.selectedDate) {
         window.state.selectedDate = defaultDate;
       }
+const logo = document.getElementById("logo");
+const logoModal = document.getElementById("logoModal");
 
+logo.addEventListener("click", () => {
+    logoModal.classList.remove("hidden");
+});
+
+logoModal.addEventListener("click", () => {
+    logoModal.classList.add("hidden");
+});
       window.renderCalendar();
       window.updateSelectedDayDetails();
     };
