@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Merci Nail Services - Booking</title>
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,6 +34,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const bookingsCol = collection(db, "appointments");
+    const feedbackCol = collection(db, "feedback");
 
     window.cloudSaveHandler = async function(data) {
       await addDoc(bookingsCol, { ...data, createdAt: serverTimestamp() });
@@ -41,12 +43,32 @@
     window.cloudDeleteHandler = async function(id) {
       await deleteDoc(doc(db, "appointments", id));
     };
-
+window.cloudDeleteFeedbackHandler = async function(id) {
+    await deleteDoc(doc(db, "feedback", id));
+};
     onSnapshot(bookingsCol, (snapshot) => {
       const liveData = [];
       snapshot.forEach(docSnap => {
         liveData.push({ id: docSnap.id, ...docSnap.data() });
       });
+      onSnapshot(feedbackCol, (snapshot) => {
+
+    const feedbackData = [];
+
+    snapshot.forEach(docSnap => {
+
+        feedbackData.push({
+            id: docSnap.id,
+            ...docSnap.data()
+        });
+
+    });
+
+    window.state.feedback = feedbackData;
+
+    window.updateFeedbackDashboard();
+
+});
       window.state.appointments = liveData;
       const statusLabel = document.getElementById('cloudStatusLabel');
       if(statusLabel) {
@@ -112,7 +134,24 @@
           <i class="fa-solid fa-user"></i>
           <span>Client Booking</span>
         </button>
-        <button id="btnOwnerMode" onclick="switchMode('owner')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 flex items-center space-x-1.5 text-pink-200 hover:text-white">
+       <a
+    href="pricelist.html"
+    class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 flex items-center space-x-1.5 text-pink-200 hover:text-white">
+
+    <i class="fa-solid fa-tags"></i>
+
+    <span>Price List</span>
+
+</a>
+<a
+    href="feedback.html"
+    class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 flex items-center space-x-1.5 text-pink-200 hover:text-white">
+
+    <i class="fa-solid fa-heart"></i>
+    <span>Feedback</span>
+
+</a>
+<button id="btnOwnerMode" onclick="switchMode('owner')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 flex items-center space-x-1.5 text-pink-200 hover:text-white">
           <i class="fa-solid fa-lock"></i>
           <span>Merci Admin</span>
         </button>
@@ -130,6 +169,7 @@
           <h1 class="text-2xl md:text-3xl font-serif font-bold mt-2 tracking-wide text-white">Live Booking Scheduler</h1>
           <p class="text-pink-100 text-sm mt-1 max-w-xl">Every session locks globally across all phones. Email alerts go directly to <strong>joubranmary@gmail.com</strong>.</p>
         </div>
+        
         
         <div class="mt-4 md:mt-0">
           <div class="bg-black/30 px-4 py-2.5 rounded-xl border border-white/10 text-xs text-center">
@@ -320,6 +360,40 @@
             <h4 class="font-bold text-[#2A0815] text-base">No appointments booked yet</h4>
           </div>
         </div>
+        <div class="bg-white p-6 rounded-2xl border border-pink-50 shadow-sm">
+
+    <div class="flex items-center justify-between mb-5">
+
+        <h3 class="font-bold text-[#2A0815] text-lg flex items-center gap-2">
+            <i class="fa-solid fa-heart text-[#D4AF37]"></i>
+            Client Feedback
+        </h3>
+
+        <span id="feedbackCount"
+              class="text-xs font-bold bg-[#FFF5F6] text-[#2A0815] px-3 py-1 rounded-full">
+            0 Reviews
+        </span>
+
+    </div>
+
+    <div id="adminFeedbackList" class="space-y-4"></div>
+
+    <div id="emptyFeedbackState"
+         class="hidden flex-col items-center justify-center py-10 text-center">
+
+        <i class="fa-regular fa-comment-dots text-3xl text-pink-200 mb-3"></i>
+
+        <h4 class="font-bold text-[#2A0815]">
+            No feedback yet
+        </h4>
+
+        <p class="text-sm text-slate-400 mt-1">
+            Client reviews will appear here.
+        </p>
+
+    </div>
+
+</div>
       </section>
     </div>
   </main>
@@ -369,6 +443,7 @@ window.state = {
 
   selectedTime: null,
   appointments: [],
+  feedback: [],
   timeSlots: [
     "09:00 AM",
     "11:00 AM",
@@ -640,13 +715,116 @@ logoModal.addEventListener("click", () => {
         </tr>
       `).join('');
     };
+window.updateFeedbackDashboard = function() {
 
+    const list = document.getElementById("adminFeedbackList");
+    const emptyState = document.getElementById("emptyFeedbackState");
+    const count = document.getElementById("feedbackCount");
+
+    if (!list) return;
+
+
+    const feedback = window.state.feedback || [];
+
+
+    count.innerText =
+        `${feedback.length} Review${feedback.length === 1 ? "" : "s"}`;
+
+
+    if (feedback.length === 0) {
+
+        list.innerHTML = "";
+
+        emptyState.classList.remove("hidden");
+        emptyState.classList.add("flex");
+
+        return;
+    }
+
+
+    emptyState.classList.add("hidden");
+    emptyState.classList.remove("flex");
+
+
+    list.innerHTML = feedback.map(review => {
+
+        const stars = "★".repeat(review.rating || 0)
+                    + "☆".repeat(5 - (review.rating || 0));
+
+
+        return `
+
+            <div class="border border-pink-100 rounded-2xl p-5 bg-[#FFF9FA]">
+
+                <div class="flex items-start justify-between gap-4">
+
+                    <div>
+
+                        <div class="font-bold text-[#2A0815]">
+                            ${review.name}
+                        </div>
+
+                        <div class="text-[#D4AF37] text-lg tracking-wide mt-1">
+                            ${stars}
+                        </div>
+
+                    </div>
+
+                    <div class="flex items-center gap-3">
+
+    <span class="text-xs text-slate-400">
+        ${review.rating}/5
+    </span>
+
+    <button
+        onclick="deleteFeedback('${review.id}')"
+        class="text-slate-400 hover:text-rose-500 transition"
+        title="Delete feedback">
+
+        <i class="fa-regular fa-trash-can"></i>
+
+    </button>
+
+</div>
+
+                </div>
+
+
+                <p class="text-sm text-slate-600 mt-4 leading-relaxed">
+                    "${review.message}"
+                </p>
+
+            </div>
+
+        `;
+
+    }).join("");
+
+};
     window.deleteAppointment = async function(id) {
       if (!confirm("Cancel this booking?")) return;
       if (window.cloudDeleteHandler) {
         await window.cloudDeleteHandler(id);
       }
     };
+   window.deleteFeedback = async function(id) {
+
+    if (!confirm("Delete this feedback?")) return;
+
+    try {
+
+        if (window.cloudDeleteFeedbackHandler) {
+            await window.cloudDeleteFeedbackHandler(id);
+        }
+
+    } catch (error) {
+
+        console.error("Error deleting feedback:", error);
+        alert("Could not delete this feedback.");
+
+    }
+
+};
 
     window.openSuccessModal = function(booking) {
       document.getElementById('modalClientName').innerText = booking.name;

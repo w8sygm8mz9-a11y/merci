@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Merci - Feedback</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #FFF0F2;
+            color: #2A0815;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+
+   
+    <header class="bg-[#2A0815] border-b border-[#D4AF37]/30 p-4">
+
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+
+            <a href="index.html"
+               class="text-[#D4AF37] font-bold text-lg">
+                ← Back to Booking
+            </a>
+
+            <h1 class="text-[#D4AF37] font-serif font-bold text-2xl">
+                merci
+            </h1>
+
+        </div>
+
+    </header>
+
+
+   
+    <main class="max-w-2xl mx-auto px-4 py-10">
+
+        <div class="bg-white rounded-3xl shadow-lg p-8">
+
+            <div class="text-center mb-8">
+
+                <i class="fa-solid fa-heart text-[#D4AF37] text-4xl mb-4"></i>
+
+                <h2 class="text-3xl font-bold font-serif text-[#2A0815]">
+                    Your Feedback
+                </h2>
+
+                <p class="text-slate-500 mt-2">
+                    I'd love to hear about your experience at Merci.
+                </p>
+
+            </div>
+
+
+            <form class="space-y-5">
+             
+                <div>
+                    <label class="block text-sm font-bold text-slate-600 mb-2">
+                        Your Name
+                    </label>
+
+                    <input
+    type="text"
+    id="feedbackName"
+    required
+    placeholder="Your name"
+    class="w-full px-4 py-3 bg-[#FFF5F6] border border-pink-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">
+                </div>
+
+                <div>
+
+                    <label class="block text-sm font-bold text-slate-600 mb-2">
+                        How was your experience?
+                    </label>
+
+                   <div id="rating" class="flex gap-2 text-4xl">
+
+    <button type="button"
+            class="star text-gray-300 hover:text-[#D4AF37] transition"
+            data-rating="1">
+        ★
+    </button>
+
+    <button type="button"
+            class="star text-gray-300 hover:text-[#D4AF37] transition"
+            data-rating="2">
+        ★
+    </button>
+
+    <button type="button"
+            class="star text-gray-300 hover:text-[#D4AF37] transition"
+            data-rating="3">
+        ★
+    </button>
+
+    <button type="button"
+            class="star text-gray-300 hover:text-[#D4AF37] transition"
+            data-rating="4">
+        ★
+    </button>
+
+    <button type="button"
+            class="star text-gray-300 hover:text-[#D4AF37] transition"
+            data-rating="5">
+        ★
+    </button>
+
+</div>
+
+<input type="hidden" id="ratingValue" name="rating" value="0">
+
+                </div>
+
+
+               
+                <div>
+
+                    <label class="block text-sm font-bold text-slate-600 mb-2">
+                        Your Feedback
+                    </label>
+
+                   <textarea
+    id="feedbackMessage"
+    required
+    rows="5"
+    placeholder="Tell me about your experience..."
+    class="w-full px-4 py-3 bg-[#FFF5F6] border border-pink-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D4AF37] resize-none"></textarea>
+
+                </div>
+
+
+                
+                <button
+                    type="submit"
+                    class="w-full bg-[#2A0815] hover:bg-[#441122] text-white font-bold py-3.5 rounded-xl transition">
+
+                    <i class="fa-solid fa-paper-plane text-[#D4AF37] mr-2"></i>
+
+                    Submit Feedback
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </main>
+    <script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+    import {
+        getFirestore,
+        collection,
+        addDoc,
+        serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+
+    // Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyAc3lLIZqnGs6mWZ43ywFqPQaV4sNYm3OQ",
+        authDomain: "merci-marry-nails.firebaseapp.com",
+        projectId: "merci-marry-nails",
+        storageBucket: "merci-marry-nails.firebasestorage.app",
+        messagingSenderId: "125567929176",
+        appId: "1:125567929176:web:d633dd6425c0b151d2732d",
+        measurementId: "G-SC42HGKKPD"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const feedbackCollection = collection(db, "feedback");
+
+
+    // ⭐ Star rating
+    const stars = document.querySelectorAll(".star");
+    const ratingValue = document.getElementById("ratingValue");
+
+    stars.forEach(star => {
+
+        star.addEventListener("click", () => {
+
+            const rating = Number(star.dataset.rating);
+
+            ratingValue.value = rating;
+
+            stars.forEach(s => {
+
+                const starRating = Number(s.dataset.rating);
+
+                if (starRating <= rating) {
+                    s.classList.remove("text-gray-300");
+                    s.classList.add("text-[#D4AF37]");
+                } else {
+                    s.classList.remove("text-[#D4AF37]");
+                    s.classList.add("text-gray-300");
+                }
+
+            });
+
+        });
+
+    });
+
+
+    // 💌 Submit feedback
+    const form = document.querySelector("form");
+
+    form.addEventListener("submit", async (event) => {
+
+        event.preventDefault();
+
+        const name = document.getElementById("feedbackName").value.trim();
+        const message = document.getElementById("feedbackMessage").value.trim();
+        const rating = Number(document.getElementById("ratingValue").value);
+
+
+        if (!name) {
+            alert("Please enter your name.");
+            return;
+        }
+
+        if (rating === 0) {
+            alert("Please choose a rating.");
+            return;
+        }
+
+        if (!message) {
+            alert("Please write some feedback.");
+            return;
+        }
+
+
+        try {
+
+            await addDoc(feedbackCollection, {
+
+                name: name,
+                rating: rating,
+                message: message,
+                createdAt: serverTimestamp()
+
+            });
+
+
+            alert("Thank you for your feedback! 💗");
+
+            form.reset();
+
+            ratingValue.value = 0;
+
+            stars.forEach(star => {
+                star.classList.remove("text-[#D4AF37]");
+                star.classList.add("text-gray-300");
+            });
+
+
+        } catch (error) {
+
+            console.error("Feedback error:", error);
+
+            alert("Something went wrong. Please try again.");
+
+        }
+
+    });
+
+</script>
+
+</body>
+
+</html>
