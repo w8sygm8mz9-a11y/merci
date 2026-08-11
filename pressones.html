@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="icon" type="image/png" href="nail.PNG">
+
+    <title>Merci Press-Ons</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #FFF0F2;
+            color: #2A0815;
+        }
+
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+
+    <header class="bg-[#2A0815] border-b border-[#D4AF37]/30 shadow-lg">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+
+            <a href="index.html" class="flex items-center gap-3">
+                <img src="nail.PNG"
+                     alt="Merci Logo"
+                     class="w-11 h-11 rounded-full object-cover">
+
+                <div>
+                    <h1 class="text-2xl font-serif font-bold text-[#D4AF37]">
+                        merci
+                    </h1>
+
+                    <p class="text-xs text-[#D4AF37]">
+                        by Marry Joubran
+                    </p>
+                </div>
+            </a>
+
+            <a href="index.html"
+               class="text-pink-200 hover:text-white text-sm font-semibold">
+                <i class="fa-solid fa-arrow-left mr-1"></i>
+                Back
+            </a>
+
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+
+        <section class="text-center mb-8">
+
+            <span class="inline-block bg-[#D4AF37]/15 text-[#8A6410]
+                         border border-[#D4AF37]/30 px-4 py-1.5
+                         rounded-full text-xs font-bold uppercase tracking-wider">
+                Custom Press-Ons
+            </span>
+
+            <h2 class="text-3xl sm:text-4xl font-serif font-bold text-[#2A0815] mt-3">
+                Order Your Press-Ons 💅
+            </h2>
+
+            <p class="text-slate-500 text-sm mt-2">
+                Choose your style, upload your inspiration, and send your order directly to WhatsApp.
+            </p>
+
+        </section>
+
+        <section class="bg-white rounded-3xl p-5 sm:p-7 shadow-sm border border-pink-100 mb-6">
+
+            <div class="flex items-center gap-2 mb-5">
+                <i class="fa-solid fa-tags text-[#D4AF37]"></i>
+
+                <h3 class="font-serif font-bold text-xl text-[#2A0815]">
+                    Press-On Prices
+                </h3>
+            </div>
+
+            <img src="pressones.png"
+                 alt="Merci Press-On Nail Prices"
+                 class="w-full max-w-2xl mx-auto rounded-2xl">
+
+        </section>
+
+        <section class="bg-white rounded-3xl p-5 sm:p-7 shadow-sm border border-pink-100">
+
+            <div class="flex items-center gap-2 mb-6">
+                <i class="fa-solid fa-heart text-[#D4AF37]"></i>
+
+                <h3 class="font-serif font-bold text-xl text-[#2A0815]">
+                    Your Order
+                </h3>
+            </div>
+
+            <div class="mb-5">
+
+                <label for="customerName"
+                       class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                    Your Name
+                </label>
+
+                <input id="customerName"
+                       type="text"
+                       placeholder="Your name"
+                       class="w-full px-4 py-3 bg-[#FFF5F6]
+                              border border-pink-100 rounded-xl
+                              text-sm focus:outline-none
+                              focus:ring-2 focus:ring-[#D4AF37]">
+
+            </div>
+
+            <div class="mb-6">
+
+                <label for="designImage"
+                       class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                    Upload Your Design
+                </label>
+
+                <label for="designImage"
+                       class="flex flex-col items-center justify-center
+                              border-2 border-dashed border-pink-200
+                              rounded-2xl p-7 cursor-pointer
+                              hover:bg-[#FFF5F6] transition">
+
+                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-[#D4AF37] mb-3"></i>
+
+                    <span class="font-bold text-[#2A0815] text-sm">
+                        Choose your inspiration picture
+                    </span>
+
+                    <span class="text-xs text-slate-400 mt-1">
+                        PNG, JPG or JPEG
+                    </span>
+
+                    <input id="designImage"
+                           type="file"
+                           accept="image/png,image/jpeg,image/jpg"
+                           class="hidden">
+
+                </label>
+
+                <div id="imagePreviewContainer" class="hidden mt-4">
+
+                    <p class="text-xs font-bold text-slate-500 mb-2">
+                        Your selected design:
+                    </p>
+
+                    <img id="imagePreview"
+                         alt="Selected nail design"
+                         class="w-full max-h-80 object-contain rounded-2xl border border-pink-100">
+
+                </div>
+
+            </div>
+
+            <div class="mb-6">
+
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
+                    Nail Length
+                </label>
+
+                <div id="lengthOptions"
+                     class="grid grid-cols-3 gap-3">
+
+                    <button type="button"
+                            data-value="S"
+                            class="length-option py-3 rounded-xl border border-pink-100
+                                   bg-white font-bold text-sm
+                                   hover:border-[#D4AF37] transition">
+                        S
+                    </button>
+
+                    <button type="button"
+                            data-value="M"
+                            class="length-option py-3 rounded-xl border border-pink-100
+                                   bg-white font-bold text-sm
+                                   hover:border-[#D4AF37] transition">
+                        M
+                    </button>
+
+                    <button type="button"
+                            data-value="L"
+                            class="length-option py-3 rounded-xl border border-pink-100
+                                   bg-white font-bold text-sm
+                                   hover:border-[#D4AF37] transition">
+                        L
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="mb-6">
+
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
+                    Nail Shape
+                </label>
+
+                <div id="shapeOptions"
+                     class="grid grid-cols-2 gap-3">
+
+                    <button type="button"
+                            data-value="Square"
+                            class="shape-option py-3 rounded-xl border border-pink-100
+                                   bg-white font-bold text-sm
+                                   hover:border-[#D4AF37] transition">
+                        <i class="fa-regular fa-square mr-2"></i>
+                        Square
+                    </button>
+
+                    <button type="button"
+                            data-value="Almond"
+                            class="shape-option py-3 rounded-xl border border-pink-100
+                                   bg-white font-bold text-sm
+                                   hover:border-[#D4AF37] transition">
+                        <i class="fa-regular fa-gem mr-2"></i>
+                        Almond
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="mb-6">
+
+                <label for="orderNotes"
+                       class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                    Additional Notes
+                </label>
+
+                <textarea id="orderNotes"
+                          rows="4"
+                          placeholder="Tell me anything else about your order..."
+                          class="w-full p-4 bg-[#FFF5F6]
+                                 border border-pink-100 rounded-xl
+                                 text-sm resize-none
+                                 focus:outline-none
+                                 focus:ring-2 focus:ring-[#D4AF37]"></textarea>
+
+            </div>
+
+            <button id="whatsappButton"
+                    type="button"
+                    class="w-full bg-[#2A0815] hover:bg-[#4A1125]
+                           text-white font-bold py-4 px-5
+                           rounded-xl shadow-lg transition
+                           flex items-center justify-center gap-3">
+
+                <i class="fa-brands fa-whatsapp text-[#D4AF37] text-xl"></i>
+
+                Send Order on WhatsApp
+
+            </button>
+
+            <p class="text-center text-xs text-slate-400 mt-3">
+    Your design picture will be uploaded automatically with your order.
+</p>
+
+        </section>
+
+        <section class="mt-8 bg-[#2A0815] rounded-3xl p-6 sm:p-8 text-center text-white">
+
+            <span class="inline-block bg-[#D4AF37]/20 text-[#D4AF37]
+                         border border-[#D4AF37]/30 px-4 py-1.5
+                         rounded-full text-xs font-bold uppercase tracking-wider">
+                Special Offers
+            </span>
+
+            <h3 class="text-2xl font-serif font-bold mt-3">
+                Current Sales 🎀
+            </h3>
+
+            <p class="text-pink-100 text-sm mt-2">
+                Check back here for current press-on deals and special offers.
+            </p>
+
+        </section>
+
+    </main>
+
+    <script>
+
+let selectedLength = "";
+let selectedShape = "";
+
+document.getElementById("designImage").addEventListener("change", function () {
+
+    const file = this.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+
+        document.getElementById("imagePreview").src = event.target.result;
+
+        document.getElementById("imagePreviewContainer")
+            .classList.remove("hidden");
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+
+
+document.querySelectorAll(".length-option").forEach(button => {
+
+    button.addEventListener("click", function () {
+
+        document.querySelectorAll(".length-option").forEach(btn => {
+
+            btn.classList.remove(
+                "bg-[#2A0815]",
+                "text-white",
+                "border-[#D4AF37]"
+            );
+
+            btn.classList.add(
+                "bg-white",
+                "text-[#2A0815]"
+            );
+
+        });
+
+        this.classList.remove(
+            "bg-white",
+            "text-[#2A0815]"
+        );
+
+        this.classList.add(
+            "bg-[#2A0815]",
+            "text-white",
+            "border-[#D4AF37]"
+        );
+
+        selectedLength = this.dataset.value;
+
+    });
+
+});
+
+
+document.querySelectorAll(".shape-option").forEach(button => {
+
+    button.addEventListener("click", function () {
+
+        document.querySelectorAll(".shape-option").forEach(btn => {
+
+            btn.classList.remove(
+                "bg-[#2A0815]",
+                "text-white",
+                "border-[#D4AF37]"
+            );
+
+            btn.classList.add(
+                "bg-white",
+                "text-[#2A0815]"
+            );
+
+        });
+
+        this.classList.remove(
+            "bg-white",
+            "text-[#2A0815]"
+        );
+
+        this.classList.add(
+            "bg-[#2A0815]",
+            "text-white",
+            "border-[#D4AF37]"
+        );
+
+        selectedShape = this.dataset.value;
+
+    });
+
+});
+
+
+document.getElementById("whatsappButton").addEventListener("click", async function () {
+
+    const name =
+        document.getElementById("customerName").value.trim();
+
+    const notes =
+        document.getElementById("orderNotes").value.trim();
+
+    const imageFile =
+        document.getElementById("designImage").files[0];
+
+
+    if (!name) {
+        alert("Please enter your name.");
+        return;
+    }
+
+
+    if (!imageFile) {
+        alert("Please upload your design picture.");
+        return;
+    }
+
+
+    if (!selectedLength) {
+        alert("Please select a nail length.");
+        return;
+    }
+
+
+    if (!selectedShape) {
+        alert("Please select a nail shape.");
+        return;
+    }
+
+
+    const button =
+        document.getElementById("whatsappButton");
+
+    const originalText =
+        button.innerHTML;
+
+
+    button.disabled = true;
+
+    button.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin text-[#D4AF37]"></i>
+        Uploading picture...
+    `;
+
+
+    try {
+
+        const formData = new FormData();
+
+        formData.append("file", imageFile);
+
+        formData.append(
+            "upload_preset",
+            "merci.pressones"
+        );
+
+
+        const response = await fetch(
+            "https://api.cloudinary.com/v1_1/bgmblvwa/image/upload",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+
+        const data = await response.json();
+
+
+        if (!response.ok || !data.secure_url) {
+            throw new Error("Upload failed");
+        }
+
+
+        const imageURL = data.secure_url;
+
+
+        const message =
+`💅 NEW PRESS-ON ORDER
+
+Name: ${name}
+
+Length: ${selectedLength}
+
+Shape: ${selectedShape}
+
+Notes:
+${notes || "None"}
+
+📸 Design picture:
+${imageURL}`;
+
+
+        const whatsappURL =
+            "https://wa.me/972524070743?text=" +
+            encodeURIComponent(message);
+
+
+        window.open(whatsappURL, "_blank");
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Something went wrong while uploading your picture. Please try again."
+        );
+
+
+    } finally {
+
+        button.disabled = false;
+
+        button.innerHTML = originalText;
+
+    }
+
+});
+
+</script>
+
+<script>
+
+const currentPage =
+    window.location.pathname.split("/").pop() || "index.html";
+
+
+document.querySelectorAll("header a, header button").forEach(link => {
+
+    const page =
+        link.getAttribute("href") || link.dataset.page;
+
+
+    if (page === currentPage) {
+
+        link.classList.remove(
+            "text-pink-200",
+            "hover:text-white"
+        );
+
+        link.classList.add(
+            "bg-[#D4AF37]",
+            "text-[#2A0815]",
+            "shadow-md"
+        );
+
+    }
+
+});
+
+</script>
+
+const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+document.querySelectorAll("header a, header button").forEach(link => {
+    const href = link.getAttribute("href");
+
+    if (href === currentPage) {
+        link.classList.remove("text-pink-200");
+        link.classList.add("bg-[#D4AF37]", "text-[#2A0815]", "shadow-md");
+    }
+});
+</script>
+</body>
+</html>

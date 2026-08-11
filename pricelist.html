@@ -23,25 +23,60 @@
 <body class="min-h-screen">
 
    
-    <header class="bg-[#2A0815] border-b border-[#D4AF37]/30 p-4">
+    
+    <header class="bg-[#2A0815] border-b border-[#D4AF37]/30 sticky top-0 z-40 backdrop-blur-md shadow-lg">
+    <div class="flex items-center gap-3">
 
-        <div class="max-w-6xl mx-auto flex items-center justify-between">
+        <img
+            id="logo"
+            src="nail.PNG"
+            alt="Merci Logo"
+            class="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover cursor-pointer">
 
-            <a href="index.html"
-               class="text-[#D4AF37] font-bold text-lg">
-                ← Back to Booking
-            </a>
-
-            <h1 class="text-[#D4AF37] font-serif font-bold text-2xl">
+        <div class="flex flex-col justify-center">
+            <h1 class="text-4xl font-serif font-bold text-[#D4AF37] leading-none">
                 merci
             </h1>
 
+            <p class="text-sm text-[#D4AF37] mt-1">
+                by Marry Joubran
+            </p>
         </div>
 
-    </header>
+    </div>
+
+    <div class="flex items-center space-x-2 bg-[#441122] p-1 rounded-xl border border-pink-900/40">
+
+        <a href="index.html" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 flex items-center space-x-1.5 text-pink-200 hover:text-white">
+            <i class="fa-solid fa-user"></i>
+            <span>Client Booking</span>
+        </a>
+
+        <a href="pricelist.html" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 flex items-center space-x-1.5 text-pink-200 hover:text-white">
+            <i class="fa-solid fa-tags"></i>
+            <span>Price List</span>
+        </a>
+
+        <a href="feedback.html" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 flex items-center space-x-1.5 text-pink-200 hover:text-white">
+            <i class="fa-solid fa-heart"></i>
+            <span>Feedback</span>
+        </a>
+
+        <a href="policies.html" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 flex items-center space-x-1.5 text-pink-200 hover:text-white">
+            <i class="fa-solid fa-file-contract mr-1"></i>
+            Policies
+        </a>
+
+        <a href="contact.html" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 flex items-center space-x-1.5 text-pink-200 hover:text-white">
+            <i class="fa-solid fa-address-book mr-1"></i>
+            Contact
+        </a>
+
+    </div>
+</header>
 
 
-    <!-- Price List -->
+    
     <main class="max-w-5xl mx-auto px-4 py-8">
 
         <h2 class="text-center text-3xl font-serif font-bold text-[#2A0815] mb-8">
@@ -58,7 +93,18 @@
         </div>
 
     </main>
+<script>
+const currentPage = window.location.pathname.split("/").pop() || "index.html";
 
+document.querySelectorAll("header a, header button").forEach(link => {
+    const page = link.getAttribute("href") || link.dataset.page;
+
+    if (page === currentPage) {
+        link.classList.remove("text-pink-200", "hover:text-white");
+        link.classList.add("bg-[#D4AF37]", "text-[#2A0815]", "shadow-md");
+    }
+});
+</script>
 </body>
 
 </html>
