@@ -974,6 +974,161 @@ window.updateFeedbackDashboard = function() {
         </a>
     </div>
 </div>
+<!-- SALES SECTION -->
+<section class="max-w-5xl mx-auto px-4 pb-12">
+
+    <div class="text-center mb-7">
+        <span class="inline-block bg-[#D4AF37]/15 text-[#8A6410]
+                     border border-[#D4AF37]/30 px-4 py-1.5
+                     rounded-full text-xs font-bold uppercase tracking-wider">
+            Special Offers
+        </span>
+
+        <h2 class="text-3xl sm:text-4xl font-serif font-bold text-[#2A0815] mt-3">
+            Sales 🎀
+        </h2>
+
+        <p class="text-slate-500 text-sm mt-2">
+            Little extras to make your Merci appointment even sweeter.
+        </p>
+    </div>
+
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+
+       
+        <div class="bg-white rounded-3xl p-6 shadow-lg border border-pink-100 text-center">
+            <div class="w-14 h-14 mx-auto rounded-full bg-[#FFF5F6]
+                        flex items-center justify-center mb-4">
+                <i class="fa-solid fa-user-group text-[#D4AF37] text-xl"></i>
+            </div>
+
+            <p class="text-xs font-bold text-pink-400 uppercase tracking-widest">
+                Friends Sale
+            </p>
+
+            <h3 class="text-xl font-serif font-bold text-[#2A0815] mt-2">
+                If you are a friend of mine its your lucky day
+            </h3>
+
+            <p class="text-sm text-slate-500 mt-2">
+                you are a friend of mine enjoy a special discount on your appointments.
+            </p>
+
+            <p class="text-[#D4AF37] font-bold text-sm mt-4">
+                5 % OFF
+            </p>
+        </div>
+
+
+       
+        <div class="bg-white rounded-3xl p-6 shadow-lg border border-pink-100 text-center">
+            <div class="w-14 h-14 mx-auto rounded-full bg-[#FFF5F6]
+                        flex items-center justify-center mb-4">
+                <i class="fa-solid fa-people-roof text-[#D4AF37] text-xl"></i>
+            </div>
+
+            <p class="text-xs font-bold text-pink-400 uppercase tracking-widest">
+                Family Sale
+            </p>
+
+            <h3 class="text-xl font-serif font-bold text-[#2A0815] mt-2">
+                Nails for a family member 🤍
+            </h3>
+
+            <p class="text-sm text-slate-500 mt-2">
+                Book if you are a family member and receive a special family discount.
+            </p>
+
+            <p class="text-[#D4AF37] font-bold text-sm mt-4">
+                15 % OFF
+            </p>
+        </div>
+
+
+       
+        <div class="bg-[#2A0815] rounded-3xl p-6 shadow-lg
+                    border border-[#D4AF37]/40 text-center text-white">
+            <div class="w-14 h-14 mx-auto rounded-full bg-[#D4AF37]
+                        flex items-center justify-center mb-4">
+                <i class="fa-solid fa-cake-candles text-[#2A0815] text-xl"></i>
+            </div>
+
+            <p class="text-xs font-bold text-[#D4AF37] uppercase tracking-widest">
+                Birthday Special
+            </p>
+
+            <h3 class="text-xl font-serif font-bold mt-2">
+                It's Your Birthday! 🎂
+            </h3>
+
+            <p class="text-sm text-pink-100 mt-2">
+                Celebrate your special day with a little Merci birthday treat.
+            </p>
+
+            <p class="text-[#D4AF37] font-bold text-sm mt-4">
+                10 % OFF
+            </p>
+        </div>
+
+
+        
+        <div class="bg-white rounded-3xl p-6 shadow-lg border border-pink-100 text-center">
+            <div class="w-14 h-14 mx-auto rounded-full bg-[#FFF5F6]
+                        flex items-center justify-center mb-4">
+                <i class="fa-solid fa-sparkles text-[#D4AF37] text-xl"></i>
+            </div>
+
+            <p class="text-xs font-bold text-pink-400 uppercase tracking-widest">
+                New Client
+            </p>
+
+            <h3 class="text-xl font-serif font-bold text-[#2A0815] mt-2">
+                First Appointment 💗
+            </h3>
+
+            <p class="text-sm text-slate-500 mt-2">
+                New to Merci? Enjoy a special discount on your first appointment.
+            </p>
+
+            <p class="text-[#D4AF37] font-bold text-sm mt-4">
+                10 % OFF
+            </p>
+        </div>
+
+
+      
+        <div class="bg-white rounded-3xl p-6 shadow-lg border border-pink-100 text-center">
+            <div class="w-14 h-14 mx-auto rounded-full bg-[#FFF5F6]
+                        flex items-center justify-center mb-4">
+                <i class="fa-solid fa-mug-hot text-[#D4AF37] text-xl"></i>
+            </div>
+
+            <p class="text-xs font-bold text-pink-400 uppercase tracking-widest">
+                Little Thank You
+            </p>
+
+            <h3 class="text-xl font-serif font-bold text-[#2A0815] mt-2">
+                Bring Me a Drink 🥤
+            </h3>
+
+            <p class="text-sm text-slate-500 mt-2">
+                Bring me a drink for your appointment and get a little thank-you surprise.
+            </p>
+
+            <p class="text-[#D4AF37] font-bold text-sm mt-4">
+                5 % OFF
+            </p>
+        </div>
+
+
+    </div>
+
+</section>
+</div>
+</script>
+
 <script>
 const currentPage = window.location.pathname.split("/").pop() || "index.html";
 
@@ -982,11 +1137,7 @@ document.querySelectorAll("header a, header button").forEach(link => {
 
     if (page === currentPage) {
         link.classList.remove("text-pink-200", "hover:text-white");
-        link.classList.add(
-            "bg-[#D4AF37]",
-            "text-[#2A0815]",
-            "shadow-md"
-        );
+        link.classList.add("bg-[#D4AF37]", "text-[#2A0815]", "shadow-md");
     }
 });
 </script>

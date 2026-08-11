@@ -273,23 +273,154 @@
 
         </section>
 
-        <section class="mt-8 bg-[#2A0815] rounded-3xl p-6 sm:p-8 text-center text-white">
+        
+<section class="mt-8">
 
-            <span class="inline-block bg-[#D4AF37]/20 text-[#D4AF37]
-                         border border-[#D4AF37]/30 px-4 py-1.5
-                         rounded-full text-xs font-bold uppercase tracking-wider">
-                Special Offers
-            </span>
+    <div class="text-center mb-7">
 
-            <h3 class="text-2xl font-serif font-bold mt-3">
-                Current Sales 🎀
-            </h3>
+        <span class="inline-block bg-[#D4AF37]/15 text-[#8A6410]
+                     border border-[#D4AF37]/30 px-4 py-1.5
+                     rounded-full text-xs font-bold uppercase tracking-wider">
+            Press-On Offers
+        </span>
 
-            <p class="text-pink-100 text-sm mt-2">
-                Check back here for current press-on deals and special offers.
+        <h3 class="text-3xl font-serif font-bold text-[#2A0815] mt-3">
+          Sales 🎀
+        </h3>
+
+        <p class="text-slate-500 text-sm mt-2">
+            The more you order, the more you save! 💗
+        </p>
+
+    </div>
+
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+
+       
+        <div class="bg-white rounded-3xl p-6 shadow-lg
+                    border border-pink-100 text-center">
+
+            <div class="w-14 h-14 mx-auto rounded-full bg-[#FFF5F6]
+                        flex items-center justify-center mb-4">
+
+                <i class="fa-solid fa-boxes-stacked text-[#D4AF37] text-xl"></i>
+
+            </div>
+
+            <p class="text-xs font-bold text-pink-400 uppercase tracking-widest">
+                Bundle Deal
             </p>
 
-        </section>
+            <h4 class="text-2xl font-serif font-bold text-[#2A0815] mt-2">
+                Buy 2 Sets
+            </h4>
+
+            <p class="text-3xl font-bold text-[#D4AF37] mt-2">
+                15% OFF
+            </p>
+
+            <p class="text-sm text-slate-500 mt-2">
+                Order two press-on sets and save 15%.
+            </p>
+
+        </div>
+
+
+       
+        <div class="bg-[#2A0815] rounded-3xl p-6 shadow-lg
+                    border border-[#D4AF37]/40 text-center text-white">
+
+            <div class="w-14 h-14 mx-auto rounded-full bg-[#D4AF37]
+                        flex items-center justify-center mb-4">
+
+                <i class="fa-solid fa-gift text-[#2A0815] text-xl"></i>
+
+            </div>
+
+            <p class="text-xs font-bold text-[#D4AF37] uppercase tracking-widest">
+                Best Value
+            </p>
+
+            <h4 class="text-2xl font-serif font-bold mt-2">
+                Buy 3 Sets
+            </h4>
+
+            <p class="text-3xl font-bold text-[#D4AF37] mt-2">
+                25% OFF
+            </p>
+
+            <p class="text-sm text-pink-100 mt-2">
+                Order three press-on sets and save 25%.
+            </p>
+
+        </div>
+
+
+        
+        <div class="bg-white rounded-3xl p-6 shadow-lg
+                    border border-pink-100 text-center">
+
+            <div class="w-14 h-14 mx-auto rounded-full bg-[#FFF5F6]
+                        flex items-center justify-center mb-4">
+
+                <i class="fa-solid fa-user-group text-[#D4AF37] text-xl"></i>
+
+            </div>
+
+            <p class="text-xs font-bold text-pink-400 uppercase tracking-widest">
+                Friends Sale
+            </p>
+
+            <h4 class="text-2xl font-serif font-bold text-[#2A0815] mt-2">
+                Order With Friends 👯‍♀️
+            </h4>
+
+            <p class="text-3xl font-bold text-[#D4AF37] mt-2">
+                25% OFF
+            </p>
+
+            <p class="text-sm text-slate-500 mt-2">
+                Order your press-ons together with your friends and save 25%.
+            </p>
+
+        </div>
+
+
+        
+        <div class="bg-[#FFF5F6] rounded-3xl p-6 shadow-lg
+                    border-2 border-[#D4AF37]/50 text-center">
+
+            <div class="w-14 h-14 mx-auto rounded-full bg-[#D4AF37]
+                        flex items-center justify-center mb-4">
+
+                <i class="fa-solid fa-crown text-[#2A0815] text-xl"></i>
+
+            </div>
+
+            <p class="text-xs font-bold text-pink-400 uppercase tracking-widest">
+                VIP Deal
+            </p>
+
+            <h4 class="text-2xl font-serif font-bold text-[#2A0815] mt-2">
+                5+ Sets 💖
+            </h4>
+
+            <p class="text-3xl font-bold text-[#D4AF37] mt-2">
+                40% OFF
+            </p>
+
+            <p class="text-sm text-slate-500 mt-2">
+                have you bought 5 or more press on sets from merci before ? its special day for our VIP customers
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
 
     </main>
 
@@ -551,18 +682,7 @@ document.querySelectorAll("header a, header button").forEach(link => {
 
 });
 
-</script>
 
-const currentPage = window.location.pathname.split("/").pop() || "index.html";
-
-document.querySelectorAll("header a, header button").forEach(link => {
-    const href = link.getAttribute("href");
-
-    if (href === currentPage) {
-        link.classList.remove("text-pink-200");
-        link.classList.add("bg-[#D4AF37]", "text-[#2A0815]", "shadow-md");
-    }
-});
 </script>
 </body>
 </html>
