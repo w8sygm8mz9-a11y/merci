@@ -414,7 +414,15 @@ window.cloudDeleteFeedbackHandler = async function(id) {
         <div class="flex justify-between"><span class="text-slate-400">Time:</span><span id="modalClientTime" class="font-bold text-[#D4AF37]"></span></div>
       </div>
      <div class="flex flex-col gap-3 mt-4">
+<button
+    onclick="addToCalendar()"
+    class="w-full bg-[#D4AF37] hover:bg-[#E2C35A] text-[#2A0815] font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition">
 
+    <i class="fa-regular fa-calendar text-lg"></i>
+
+    Add to Calendar
+
+</button>
     <a
         href="https://wa.me/972524070743"
         target="_blank"
@@ -930,7 +938,68 @@ window.updateFeedbackDashboard = function() {
     }
 
 };
+window.addToCalendar = function() {
 
+    const name = document.getElementById("modalClientName").innerText.trim();
+    const date = document.getElementById("modalClientDate").innerText.trim();
+    const time = document.getElementById("modalClientTime").innerText.trim();
+
+    const match = time.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+
+    if (!match) {
+        alert("Unable to read appointment time.");
+        return;
+    }
+
+    let hour = parseInt(match[1]);
+    const minute = parseInt(match[2]);
+    const period = match[3].toUpperCase();
+
+    if (period === "PM" && hour !== 12) hour += 12;
+    if (period === "AM" && hour === 12) hour = 0;
+
+    const [year, month, day] = date.split("-").map(Number);
+
+    const start = new Date(year, month - 1, day, hour, minute);
+    const end = new Date(start.getTime() + 3 * 60 * 60 * 1000);
+
+    const pad = n => String(n).padStart(2, "0");
+
+    const formatLocalDate = d =>
+        `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}` +
+        `T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+
+    const eventData = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Merci Nail Services//EN",
+        "BEGIN:VEVENT",
+        `DTSTART:${formatLocalDate(start)}`,
+        `DTEND:${formatLocalDate(end)}`,
+        `SUMMARY:Merci Nail Appointment`,
+        `DESCRIPTION:Nail appointment for ${name} at Merci Nail Services.`,
+        "END:VEVENT",
+        "END:VCALENDAR"
+    ].join("\r\n");
+
+    const blob = new Blob([eventData], {
+        type: "text/calendar;charset=utf-8"
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "Merci-Appointment.ics";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setTimeout(() => {
+        URL.revokeObjectURL(url);
+    }, 1000);
+};
     window.openSuccessModal = function(booking) {
       document.getElementById('modalClientName').innerText = booking.name;
       document.getElementById('modalClientDate').innerText = booking.date;
