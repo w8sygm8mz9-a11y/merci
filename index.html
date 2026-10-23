@@ -745,8 +745,9 @@ logoModal.addEventListener("click", () => {
         document.getElementById('selectedTimeVal').value = '';
         window.updateBookingSummary();
       } catch (err) {
-        console.error(err);
-      }
+    console.error("BOOKING ERROR:", err);
+    alert("Booking failed: " + err.message);
+}
     };
 
     window.triggerRealEmailAlert = function(booking) {
